@@ -1,0 +1,79 @@
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+}
+
+.remember-me input[type="checkbox"] {
+    accent-color: rgba(238, 52, 37, 1);
+}
+
+.forgot-password {
+    color: #333;
+    text-decoration: none;
+}
+
+.login-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: rgba(238, 52, 37, 1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+}
+
+.login-button:hover {
+    background-color: rgba(238, 52, 37, 0.9);
+}
+
+.signup-prompt {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #333;
+}
+
+.signup-prompt a {
+    color: rgba(238, 52, 37, 1);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+} 

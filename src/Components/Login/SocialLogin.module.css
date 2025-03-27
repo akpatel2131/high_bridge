@@ -1,0 +1,53 @@
+.divider {
+    text-align: center;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: var(--color-light-gray);
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+.dividerText {
+    background-color: var(--color-white);
+    padding: 0 var(--spacing-10);
+    color: var(--color-medium-gray);
+}
+
+.socialLogins {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+}
+
+.socialButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-8);
+    width: var(--full-size);
+    padding: var(--spacing-12);
+    border: 1px solid var(--color-light-gray);
+    border-radius: 4px;
+    background-color: var(--color-white);
+    cursor: pointer;
+    font-size: var(--font-size-16);
+}
+
+.socialIcon {
+    width: 24px;
+    height: 24px;
+} 

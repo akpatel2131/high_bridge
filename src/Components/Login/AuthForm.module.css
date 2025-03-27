@@ -1,0 +1,79 @@
+.formGroup {
+    margin-bottom: var(--spacing-16);
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: var(--spacing-8);
+    color: var(--color-dark-gray);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-600);
+}
+
+.formGroup input {
+    width: var(--full-size);
+    padding: var(--spacing-12);
+    border: 1px solid var(--color-light-gray);
+    border-radius: 4px;
+    font-size: var(--font-size-16);
+}
+
+.formOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-24);
+}
+
+.rememberMe {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    color: var(--color-dark-gray);
+}
+
+.rememberMe input[type="checkbox"] {
+    accent-color: var(--color-primary);
+}
+
+.forgotPassword {
+    color: var(--color-dark-gray);
+    text-decoration: none;
+}
+
+.loginButton {
+    width: var(--full-size);
+    padding: var(--spacing-16);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: 4px;
+    font-size: var(--font-size-16);
+    cursor: pointer;
+    margin-bottom: var(--spacing-24);
+}
+
+.loginButton:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.signupPrompt {
+    text-align: center;
+    margin-top: var(--spacing-24);
+    color: var(--color-dark-gray);
+}
+
+.signupPrompt a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-700);
+}
+
+.errorMessage {
+    background-color: var(--color-error-bg);
+    color: var(--color-error);
+    padding: var(--spacing-12);
+    border-radius: 4px;
+    margin-bottom: var(--spacing-16);
+    font-size: var(--font-size-14);
+} 
