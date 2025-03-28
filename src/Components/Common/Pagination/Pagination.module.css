@@ -46,3 +46,9 @@
   background: none;
   cursor: default;
 } 
+
+@media (max-width: 768px) {
+  .pagination {
+    width: 1000px
+  }
+}

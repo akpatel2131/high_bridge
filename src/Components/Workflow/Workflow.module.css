@@ -243,3 +243,14 @@
   color: var(--color-medium-gray);
   font-style: italic;
 }
+
+
+@media (max-width: 768px) {
+  .workflowContent {
+    padding: var(--spacing-38) 0;
+  }
+
+  .nodeConfig {
+    position: absolute;
+  }
+}

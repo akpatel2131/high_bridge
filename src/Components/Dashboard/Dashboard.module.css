@@ -274,3 +274,21 @@
   color: var(--color-dark-gray);
   font-weight: var(--font-weight-600);
 }
+
+
+@media (max-width: 768px) {
+  .searchContainer {
+    flex-direction: column;
+    gap: var(--spacing-16);
+    align-items: flex-start;
+  }
+
+  .workflowTable {
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+  .tableHeader, .tableRow {
+    width: 1000px;
+  }
+}

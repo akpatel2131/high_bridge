@@ -1,7 +1,7 @@
 .loginContainer {
     display: flex;
     align-items: center;
-    height: 100%;
+    height: var(--full-size);
     background-color: var(--color-white);
     background: linear-gradient(var(--color-black-50), var(--color-black-50)), url('../../Images/LoginImages/login_bg.svg');
 }
@@ -78,3 +78,34 @@
     margin: 0;
     margin-bottom: var(--spacing-24);
 } 
+
+
+@media (max-width: 1024px) {
+    .loginContainer {
+        flex-direction: column;
+        gap: var(--spacing-36);
+        padding: var(--spacing-16);
+        height: fit-content;
+    }
+
+    .loginLeft {
+        align-items: center;
+        margin: 0;
+        width: var(--full-size);
+        padding: 0;
+        text-align: center;
+    }
+
+    .loginRight {
+        width: var(--full-size);
+    }
+
+    .loginFormContainer {
+        position: relative;
+        right: 0;
+        bottom: auto;
+        top: 0;
+        width: var(--full-size);
+        padding: var(--spacing-32) var(--spacing-36);
+    }
+}
