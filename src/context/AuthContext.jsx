@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { 
     getAuth, 
     createUserWithEmailAndPassword, 
@@ -12,10 +12,14 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
-    return useContext(AuthContext);
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 };
 
 export const AuthProvider = ({ children }) => {
@@ -27,23 +31,23 @@ export const AuthProvider = ({ children }) => {
         severity: 'info' // 'error', 'warning', 'info', 'success'
     });
 
-    const showNotification = (message, severity = 'info') => {
+    const showNotification = useCallback((message, severity = 'info') => {
         setNotification({
             open: true,
             message,
             severity
         });
-    };
+    }, []);
 
-    const hideNotification = () => {
+    const hideNotification = useCallback(() => {
         setNotification(prev => ({
             ...prev,
             open: false
         }));
-    };
+    }, []);
 
     // Sign Up with email/password
-    const signup = async (email, password) => {
+    const signup = useCallback(async (email, password) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             showNotification('Account created successfully!', 'success');
@@ -52,10 +56,10 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Login with email/password
-    const login = async (email, password) => {
+    const login = useCallback(async (email, password) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             showNotification('Logged in successfully!', 'success');
@@ -64,10 +68,10 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Logout
-    const logout = async () => {
+    const logout = useCallback(async () => {
         try {
             await signOut(auth);
             showNotification('Logged out successfully!', 'success');
@@ -75,10 +79,10 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Google Sign In
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = useCallback(async () => {
         const provider = new GoogleAuthProvider();
         try {
             const result = await signInWithPopup(auth, provider);
@@ -88,10 +92,10 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Facebook Sign In
-    const signInWithFacebook = async () => {
+    const signInWithFacebook = useCallback(async () => {
         const provider = new FacebookAuthProvider();
         try {
             const result = await signInWithPopup(auth, provider);
@@ -101,10 +105,10 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Apple Sign In
-    const signInWithApple = async () => {
+    const signInWithApple = useCallback(async () => {
         const provider = new OAuthProvider('apple.com');
         try {
             const result = await signInWithPopup(auth, provider);
@@ -114,7 +118,7 @@ export const AuthProvider = ({ children }) => {
             showNotification(error.message, 'error');
             throw error;
         }
-    };
+    }, [showNotification]);
 
     // Listen to auth state changes
     useEffect(() => {
@@ -135,7 +139,9 @@ export const AuthProvider = ({ children }) => {
         signInWithFacebook,
         signInWithApple,
         notification,
-        hideNotification
+        hideNotification,
+        showNotification,
+        loading
     };
 
     return (

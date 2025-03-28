@@ -1,14 +1,19 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { useAuth } from './context/AuthContext';
-import Notification from './Components/Common/Notification';
-import Login from './Components/Login/Login';
-import SignUp from './Components/Login/SignUp';
-import Dashboard from './Components/Dashboard/Dashboard';
-import Workflow from './Components/Workflow/Workflow';
-import './App.css';
-
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
+import Notification from "./Components/Common/Notification";
+import Login from "./Components/Login/Login";
+import SignUp from "./Components/Login/SignUp";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import Workflow from "./Components/Workflow/Workflow";
+import "./App.css";
+import { WorkflowProvider } from "./context/WorkflowContext";
 
 const AppContent = () => {
   const { notification, hideNotification } = useAuth();
@@ -26,7 +31,7 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Dashboard />} />
-          <Route path="/workflow" element={<Workflow />} />
+          <Route path="/workflow/*" element={<Workflow />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
@@ -37,7 +42,9 @@ const AppContent = () => {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <WorkflowProvider>
+        <AppContent />
+      </WorkflowProvider>
     </AuthProvider>
   );
 }

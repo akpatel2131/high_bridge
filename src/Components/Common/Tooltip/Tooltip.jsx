@@ -29,8 +29,6 @@ export default function Tooltip({
     setIsOpen(false);
   };
 
-  console.log({isOpen, options})
-
   return (
     <div className={clsx(styles.tooltipContainer, className)} ref={tooltipRef}>
       <div

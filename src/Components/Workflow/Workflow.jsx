@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import styles from "./Workflow.module.css";
-import { FaPlus, FaTrash, FaSave, FaChevronLeft } from "react-icons/fa";
+import { FaTrash, FaSave, FaChevronLeft } from "react-icons/fa";
 import NodeConfig from "./NodeConfig";
 import SaveWorkflowModal from "../SaveWorkflowModal/SaveWorkflowModal";
 import workFlowArrow from "../../Images/WorkFlow/work_flow_arrow.svg";
@@ -8,39 +9,67 @@ import startFlow from "../../Images/WorkFlow/start_flow.svg";
 import endFlow from "../../Images/WorkFlow/end_flow.svg";
 import Tooltip from "../Common/Tooltip/Tooltip";
 import clsx from "clsx";
+import { useWorkflow } from "../../context/WorkflowContext";
+import { useAuth } from "../../context/AuthContext";
 
 const Workflow = () => {
-  const [nodes, setNodes] = useState([
-    {
-      id: "api1",
-      type: "api",
-      label: "API Call",
-      details: { method: "GET", url: "https://api.example.com/data" },
-    },
-    { id: "email1", type: "email", label: "Email", details: { email: "test@example.com" } },
-    {
-      id: "text1",
-      type: "text",
-      label: "Text Box",
-      details: { message: "This is a test message" },
-    },
-  ]);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { fetchWorkflowById, createWorkflow, updateWorkflow, loading } = useWorkflow();
+  const { showNotification } = useAuth();
 
+  const [nodes, setNodes] = useState([]);
   const [selectedNode, setSelectedNode] = useState(null);
   const [title, setTitle] = useState("Untitled");
+  const [description, setDescription] = useState("");
   const [isSaveModalOpen, setSaveModalOpen] = useState(false);
 
-  const handleAddNode = (index, nodeType) => {
-    const newNode = { id: `${nodeType}${index}`, type: nodeType, details: {} };
-    const newNodes = [...nodes];
-    newNodes.splice(index + 1, 0, newNode);
-    setNodes(newNodes);
-  };
+  const workflowId = searchParams.get("id");
+  const status = searchParams.get("status");
+
+  useEffect(() => {
+    const loadWorkflow = async () => {
+      if (workflowId) {
+        try {
+          const workflow = await fetchWorkflowById(workflowId);
+          if (workflow) {
+            setTitle(workflow.title);
+            setDescription(workflow.description);
+            setNodes(workflow.workflow);
+          }
+          showNotification("Workflow loaded successfully!", "success");
+        } catch (error) {
+          showNotification(error.message, "error");
+        }
+      }
+    };
+    loadWorkflow();
+  }, [workflowId, fetchWorkflowById]);
+
+  const handleAddNode = useCallback(
+    (index, nodeType) => {
+      const type =
+        nodeType === "API Call"
+          ? "api"
+          : nodeType === "Email"
+          ? "email"
+          : "text";
+      const newNode = {
+        id: `${type}_${Date.now()}`,
+        type: type,
+        label: nodeType,
+        details: {},
+      };
+
+      const newNodes = [...nodes];
+      newNodes.splice(index + 1, 0, newNode);
+      setNodes(newNodes);
+    },
+    [nodes]
+  );
 
   const handleDeleteNode = (id) => {
-    // Don't allow deletion of start or end nodes
     if (id === "start" || id === "end") return;
-
     setNodes(nodes.filter((node) => node.id !== id));
     if (selectedNode && selectedNode.id === id) {
       setSelectedNode(null);
@@ -52,24 +81,40 @@ const Workflow = () => {
   };
 
   const handleGoBack = () => {
-    // navigate("/")
+    navigate("/home");
   };
 
   const handleOpenSaveModal = () => {
     setSaveModalOpen(true);
   };
 
-  const handleSaveWorkflow = (workflowData) => {
-    setTitle(workflowData.name);
-    // Here you would typically save the workflow data to your backend
-    console.log("Saving workflow:", { ...workflowData, nodes });
+  const handleSaveWorkflow = async (data) => {
+    try {
+      if (workflowId) {
+        await updateWorkflow(workflowId, {
+          title: data.name,
+          description: data.description,
+          nodes,
+        });
+      } else {
+        await createWorkflow(data.name, data.description, nodes);
+      }
+      navigate(`/home`);
+      showNotification("Workflow saved successfully!", "success");
+    } catch (error) {
+      showNotification(error.message, "error");
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.workflowContainer}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={handleGoBack}>
-          {`<-`} Go Back
+          <FaChevronLeft /> Go Back
         </button>
         <span>{title}</span>
         <button className={styles.saveButton} onClick={handleOpenSaveModal}>
@@ -79,11 +124,14 @@ const Workflow = () => {
 
       <div className={styles.workflowContent}>
         <div className={styles.nodesContainer}>
-          <img src={startFlow} />
+          <img src={startFlow} alt="Start" />
           {nodes.map((node) => (
             <React.Fragment key={node.id}>
-              <Tooltip options={["API Call", "Email", "Text Box"]}>
-                <img src={workFlowArrow} />
+              <Tooltip
+                options={["API Call", "Email", "Text Box"]}
+                onSelect={(option) => handleAddNode(nodes.length, option)}
+              >
+                <img src={workFlowArrow} alt="Arrow" />
               </Tooltip>
               <div
                 className={clsx(styles.node, {
@@ -106,11 +154,11 @@ const Workflow = () => {
           ))}
           <Tooltip
             options={["API Call", "Email", "Text Box"]}
-            onClick={() => handleAddNode(nodes.length, "api")}
+            onSelect={(type) => handleAddNode(nodes.length, type)}
           >
-            <img src={workFlowArrow} />
+            <img src={workFlowArrow} alt="Arrow" />
           </Tooltip>
-          <img src={endFlow} />
+          <img src={endFlow} alt="End" />
         </div>
 
         {selectedNode && (
@@ -128,6 +176,7 @@ const Workflow = () => {
         onClose={() => setSaveModalOpen(false)}
         onSave={handleSaveWorkflow}
         initialName={title !== "Untitled" ? title : ""}
+        initialDescription={description || ""}
       />
     </div>
   );

@@ -18,9 +18,7 @@ const Login = () => {
         try {
             setLoading(true);
             await login(email, password);
-            navigate('/dashboard');
-        } catch (error) {
-            // Error is handled by AuthContext
+            navigate('/home');
         } finally {
             setLoading(false);
         }

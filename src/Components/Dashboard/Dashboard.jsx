@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 import styles from "./Dashboard.module.css";
 import {
   FaStar,
@@ -12,77 +14,44 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import dashboardMenu from "../../Images/DashboardImages/dashboard_menu.svg";
 import Pagination from "../Common/Pagination/Pagination";
 import ExecutionModal from "../ExecutionModal/ExecutionModal";
+import { useWorkflow } from "../../context/WorkflowContext";
+import { useAuth } from "../../context/AuthContext";
+import Tooltip from "../Common/Tooltip/Tooltip";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const { workflows, fetchWorkflows, deleteWorkflow, loading } = useWorkflow();
+  const { showNotification } = useAuth();
+
   const [expandedWorkflow, setExpandedWorkflow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isExecutionModalOpen, setIsExecutionModalOpen] = useState(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
-  const totalPages = 15; // This would typically come from your API
 
-  // Mock data for workflows
-  const workflows = [
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: true,
-      history: [
-        { timestamp: "28/05 - 22:43 IST", status: "Passed" },
-        { timestamp: "28/05 - 22:43 IST", status: "Failed" },
-        { timestamp: "28/05 - 22:43 IST", status: "Failed" },
-      ],
-    },
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: true,
-    },
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: false,
-    },
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: false,
-    },
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: false,
-    },
-    {
-      id: "#494",
-      name: "Workflow Name here...",
-      lastEdited: "Zubin Khanna | 22:43 IST - 28/05",
-      description: "Some Description Here Regarding The Flow..",
-      isFavorite: false,
-    },
-  ];
+  useEffect(() => {
+    fetchWorkflows();
+  }, [fetchWorkflows]);
+
+  const filteredWorkflows = workflows.filter(
+    (workflow) =>
+      workflow.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      workflow.uuid.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredWorkflows.length / itemsPerPage);
+  const paginatedWorkflows = filteredWorkflows.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const toggleExpand = (index) => {
-    if (expandedWorkflow === index) {
-      setExpandedWorkflow(null);
-    } else {
-      setExpandedWorkflow(index);
-    }
+    setExpandedWorkflow(expandedWorkflow === index ? null : index);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Here you would typically fetch data for the new page
   };
 
   const handleExecute = (workflow) => {
@@ -91,10 +60,27 @@ const Dashboard = () => {
   };
 
   const handleConfirmExecution = () => {
-    // Handle the execution confirmation here
-    console.log(`Executing workflow: ${selectedWorkflow.name}`);
+    showNotification(`Executing workflow: ${selectedWorkflow.title}`, "info");
     setIsExecutionModalOpen(false);
   };
+
+  const handleCreateNew = () => {
+    navigate("/workflow");
+  };
+
+  const handleEdit = (workflowId, status = "") => {
+    navigate(`/workflow?id=${workflowId}&&status=${status}`);
+  };
+
+  const handleDelete = async (workflowId) => {
+    try {
+      await deleteWorkflow(workflowId);
+      showNotification("Workflow deleted successfully", "success");
+    } catch (error) {
+      showNotification(error.message, "error");
+    }
+  };
+  
 
   return (
     <div className={styles.dashboardContainer}>
@@ -109,10 +95,12 @@ const Dashboard = () => {
             type="text"
             placeholder="Search By Workflow Name/ID"
             className={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <FaSearch className={styles.searchIcon} />
         </div>
-        <button className={styles.createButton}>
+        <button className={styles.createButton} onClick={handleCreateNew}>
           <FaPlus /> Create New Process
         </button>
       </div>
@@ -125,84 +113,100 @@ const Dashboard = () => {
           <div className={styles.description}>Description</div>
           <div className={styles.actions}></div>
         </div>
-
-        {workflows.map((workflow, index) => (
-          <React.Fragment key={index}>
-            <div className={styles.tableRow}>
-              <div className={styles.workflowName}>{workflow.name}</div>
-              <div className={styles.workflowId}>{workflow.id}</div>
-              <div className={styles.lastEdited}>{workflow.lastEdited}</div>
-              <div className={styles.description}>{workflow.description}</div>
-              <div className={styles.actions}>
-                <button className={styles.favoriteButton}>
-                  {workflow.isFavorite ? (
-                    <FaStar className={styles.favoriteIcon} />
-                  ) : (
-                    <FaRegStar className={styles.favoriteIcon} />
-                  )}
-                </button>
-                <button 
-                  className={styles.executeButton}
-                  onClick={() => handleExecute(workflow)}
-                >
-                  Execute
-                </button>
-                <button className={styles.editButton}>Edit</button>
-                <button className={styles.optionsButton}>
-                  <FaEllipsisV />
-                </button>
-                <button
-                  className={styles.expandButton}
-                  onClick={() => toggleExpand(index)}
-                >
-                  {expandedWorkflow === index ? <FaArrowUp /> : <FaArrowDown />}
-                </button>
+        {loading ? (
+          <div> loding...</div>
+        ) : workflows.length > 0 ? (
+          paginatedWorkflows.map((workflow, index) => (
+            <React.Fragment key={workflow.id}>
+              <div className={styles.tableRow}>
+                <div className={styles.workflowName}>{workflow.title}</div>
+                <div className={styles.workflowId}>{workflow.uuid}</div>
+                <div className={styles.lastEdited}>
+                  {workflow.edit_details[workflow.edit_details.length - 1]
+                    ?.time || "N/A"}
+                </div>
+                <div className={styles.description}>{workflow.description}</div>
+                <div className={styles.actions}>
+                  <button
+                    className={styles.executeButton}
+                    onClick={() => handleExecute(workflow)}
+                  >
+                    Execute
+                  </button>
+                  <button
+                    className={styles.editButton}
+                    onClick={() => handleEdit(workflow.id)}
+                  >
+                    Edit
+                  </button>
+                  <Tooltip
+                    options={["Delete"]}
+                    onSelect={() => handleDelete(workflow.id)}
+                  >
+                    <FaEllipsisV />
+                  </Tooltip>
+                  <button
+                    className={styles.expandButton}
+                    onClick={() => toggleExpand(index)}
+                  >
+                    {expandedWorkflow === index ? (
+                      <FaArrowUp />
+                    ) : (
+                      <FaArrowDown />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {expandedWorkflow === index && workflow.history && (
-              <div className={styles.expandedContent}>
-                {workflow.history.map((item, historyIndex) => (
-                  <div key={historyIndex} className={styles.historyItem}>
-                    <div className={styles.historyTimeline}>
-                      <div className={styles.timelineDot}></div>
-                      <div className={styles.timelineLine}></div>
-                    </div>
-                    <div className={styles.historyContent}>
-                      <div className={styles.historyTimestamp}>
-                        {item.timestamp}
+              {expandedWorkflow === index && (
+                <div className={styles.expandedContent}>
+                  {workflow.edit_details.map((detail, historyIndex) => (
+                    <div key={historyIndex} className={styles.historyItem}>
+                      <div className={styles.historyTimeline}>
+                        <div className={styles.timelineDot}></div>
+                        <div className={styles.timelineLine}></div>
                       </div>
-                      <div
-                        className={`${styles.historyStatus} ${
-                          item.status === "Passed"
-                            ? styles.statusPassed
-                            : styles.statusFailed
-                        }`}
-                      >
-                        {item.status}
+                      <div className={styles.historyContent}>
+                        <div className={styles.historyTimestamp}>
+                          {format(new Date(detail.date.seconds * 1000), "dd/MM/yyyy - HH:mm") || "N/A"}
+                        </div>
+                        <div
+                          className={`${styles.historyStatus} ${
+                            detail.status === "passed"
+                              ? styles.statusPassed
+                              : styles.statusFailed
+                          }`}
+                        >
+                          {detail.status}
+                        </div>
+                        <button className={styles.viewDetailsButton} onClick={() => handleEdit(workflow.id, detail.status)}>
+                          <FaExternalLinkAlt />
+                        </button>
                       </div>
-                      <button className={styles.viewDetailsButton}>
-                        <FaExternalLinkAlt />
-                      </button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </React.Fragment>
-        ))}
+                  ))}
+                </div>
+              )}
+            </React.Fragment>
+          ))
+        ) : (
+          <div className={styles.noWorkflows}>No workflows found</div>
+        )}
+
+      {paginatedWorkflows.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
+      )}
       </div>
 
       {selectedWorkflow && (
         <ExecutionModal
           isOpen={isExecutionModalOpen}
           onClose={() => setIsExecutionModalOpen(false)}
-          processName={selectedWorkflow.name}
+          processName={selectedWorkflow.title}
           onConfirm={handleConfirmExecution}
         />
       )}
@@ -211,3 +215,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
