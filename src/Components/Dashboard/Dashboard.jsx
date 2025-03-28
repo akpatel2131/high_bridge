@@ -16,6 +16,7 @@ import { useWorkflow } from "../../context/WorkflowContext";
 import { useAuth } from "../../context/AuthContext";
 import Tooltip from "../Common/Tooltip/Tooltip";
 import Loader from "../Common/Loader/Loader";
+import noData from "../../Images/no-data.svg"
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -193,7 +194,10 @@ const Dashboard = () => {
             </React.Fragment>
           ))
         ) : (
-          <div className={styles.noWorkflows}>No workflows found</div>
+          <div className={styles.noWorkflows}>
+            <img src={noData} alt="No Workflows" />
+            <div className={styles.noWorkflowsText}>No workflows found</div>
+          </div>
         )}
 
       {paginatedWorkflows.length > 0 && (

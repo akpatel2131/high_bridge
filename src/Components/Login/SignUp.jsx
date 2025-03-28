@@ -4,6 +4,8 @@ import AuthLayout from './AuthLayout';
 import SocialLogin from './SocialLogin';
 import { useAuth } from '../../context/AuthContext';
 import styles from './AuthForm.module.css';
+import { SyncLoader } from 'react-spinners';
+
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -27,9 +29,7 @@ const SignUp = () => {
         try {
             setLoading(true);
             await signup(email, password);
-            navigate('/home');
-        } catch (error) {
-            // Error is handled by AuthContext
+            navigate('/login');
         } finally {
             setLoading(false);
         }
@@ -79,7 +79,7 @@ const SignUp = () => {
                     className={styles.loginButton}
                     disabled={loading}
                 >
-                    {loading ? 'Creating Account...' : 'Sign Up'}
+                    {loading ? <SyncLoader color="#fff" size={10} /> : 'Sign Up'}
                 </button>
                 
                 <SocialLogin type="signup" />

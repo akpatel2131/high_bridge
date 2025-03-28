@@ -1,6 +1,7 @@
 .divider {
     text-align: center;
     position: relative;
+    margin-bottom: var(--spacing-16);
 }
 
 .divider::before,
