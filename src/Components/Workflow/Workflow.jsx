@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useEffectOnce } from "react-use";
 import styles from "./Workflow.module.css";
 import { FaTrash, FaSave } from "react-icons/fa";
 import NodeConfig from "./NodeConfig";
@@ -32,12 +31,6 @@ const Workflow = () => {
 
   const workflowId = searchParams.get("id");
   const status = searchParams.get("status");
-
-  useEffectOnce(() => {
-    if (!localStorage.getItem("user")) {
-      navigate("/login");
-    }
-  });
 
   useEffect(() => {
     const loadWorkflow = async () => {

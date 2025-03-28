@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {useEffectOnce} from "react-use";
 import { format } from "date-fns";
 import styles from "./Dashboard.module.css";
 import {
@@ -30,13 +29,6 @@ const Dashboard = () => {
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 5;
-
-
-  useEffectOnce(() => {
-    if(!localStorage.getItem('user')) {
-      navigate('/login');
-    }
-  });
 
   useEffect(() => {
     fetchWorkflows();

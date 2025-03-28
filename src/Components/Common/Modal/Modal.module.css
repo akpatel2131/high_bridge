@@ -96,3 +96,11 @@
     opacity: 1;
   }
 } 
+
+
+@media (max-width: 768px) {
+  .small, .medium, .large {
+    max-width: 350px;
+  }
+}
+

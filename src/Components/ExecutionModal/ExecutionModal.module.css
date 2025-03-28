@@ -87,3 +87,10 @@
   background-color: var(--color-dashboard-bg);
   border-color: var(--color-medium-gray);
 }
+
+@media (max-width: 768px) {
+  .executionContent {
+    background-color: transparent;
+  }
+}
+

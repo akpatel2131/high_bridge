@@ -59,7 +59,7 @@
     right: 120px;
     bottom: 0;
     width: 350px;
-    padding: var(--spacing-32) var(--spacing-36);
+    padding: var(--spacing-16) var(--spacing-36);
     background-color: var(--color-white);
     border-radius: 20px;
     text-align: left;
@@ -76,7 +76,7 @@
     font-size: var(--font-size-24);
     font-weight: var(--font-weight-600);
     margin: 0;
-    margin-bottom: var(--spacing-24);
+    margin-bottom: var(--spacing-20);
 } 
 
 
@@ -85,7 +85,7 @@
         flex-direction: column;
         gap: var(--spacing-36);
         padding: var(--spacing-16);
-        height: fit-content;
+        height: var(--full-size);
     }
 
     .loginLeft {
@@ -107,5 +107,11 @@
         top: 0;
         width: var(--full-size);
         padding: var(--spacing-32) var(--spacing-36);
+    }
+}
+
+@media (max-width: 768px) {
+    .loginContainer {
+        height: fit-content;
     }
 }

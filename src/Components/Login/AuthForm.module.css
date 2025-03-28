@@ -77,3 +77,16 @@
     margin-bottom: var(--spacing-16);
     font-size: var(--font-size-14);
 } 
+
+
+@media (max-width: 1024px) {
+    .formGroup input {
+        width: 97%;
+    }
+}
+
+@media (max-width: 768px) {
+    .formGroup input {
+        width: 250px;
+    }
+}
