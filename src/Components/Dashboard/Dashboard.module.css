@@ -1,0 +1,236 @@
+.dashboardContainer {
+  padding: var(--spacing-20);
+  background-color: var(--color-white);
+  min-height: var(--full-size);
+  background-color: var(--color-dashboard-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-10);
+  margin-bottom: var(--spacing-30);
+  border-bottom: 1px solid var(--color-light-gray);
+  padding-bottom: var(--spacing-20);
+}
+
+.title {
+  font-size: var(--font-size-20);
+  color: var(--color-dark-gray);
+  margin: 0;
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-20);
+  max-width: 1400px;
+  margin: var(--spacing-20) auto;
+}
+
+.searchBar {
+  position: relative;
+  width: 300px;
+}
+
+.searchInput {
+  width: 300px;
+  padding: var(--spacing-10) var(--spacing-12);
+  border: 1px solid var(--color-light-gray);
+  border-radius: var(--font-size-4);
+  font-size: var(--font-size-16);
+  background-color: var(--color-white);
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-medium-gray);
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  padding: var(--spacing-8) var(--spacing-16);
+  font-size: var(--font-size-14);
+  cursor: pointer;
+}
+
+.workflowTable {
+  width: var(--full-size);
+  max-width: 1400px;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.workflowTable div {
+  text-align: left;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 2fr 2fr 1fr;
+  padding: var(--spacing-12) var(--spacing-16);
+  border-bottom: 1px solid var(--color-light-gray);
+  color: var(--color-dark-gray);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-600);
+  background-color: var(--color-white);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 2fr 2fr 1fr;
+  padding: var(--spacing-16);
+  border-bottom: 1px solid var(--color-light-gray);
+  align-items: center;
+  background-color: var(--color-white);
+}
+
+.workflowName, .workflowId, .lastEdited, .description {
+  color: var(--color-dark-gray);
+  font-size: var(--font-size-14);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-8);
+}
+
+.favoriteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-4);
+  display: flex;
+  align-items: center;
+}
+
+.favoriteIcon {
+  color: var(--color-warning);
+  font-size: var(--font-size-16);
+}
+
+.executeButton, .editButton {
+  background: none;
+  border: 1px solid var(--color-light-gray);
+  border-radius: 4px;
+  padding: var(--spacing-6) var(--spacing-12);
+  font-size: var(--font-size-14);
+  cursor: pointer;
+  color: var(--color-dark-gray);
+}
+
+.executeButton:hover, .editButton:hover {
+  background-color: var(--color-dashboard-bg);
+  border-color: var(--color-medium-gray);
+}
+
+.optionsButton, .expandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-medium-gray);
+  padding: var(--spacing-4);
+  display: flex;
+  align-items: center;
+}
+
+.expandedContent {
+  background-color: var(--color-expanded-bg);
+  padding: var(--spacing-16) var(--spacing-16) var(--spacing-16) var(--spacing-38);
+  border-bottom: 1px solid var(--color-light-gray);
+}
+
+.historyItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-20);
+  position: relative;
+}
+
+.historyTimeline {
+  position: relative;
+  margin-right: var(--spacing-10);
+  height: var(--full-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-timeline);
+  box-shadow: 0 0 6px 1px var(--color-timeline);
+  position: relative;
+  z-index: 1;
+  margin-top: var(--spacing-6);
+}
+
+.timelineLine {
+  width: 2px;
+  background-color: var(--color-timeline);
+  position: absolute;
+  top: 8px;
+  bottom: -40px;
+  left: 3px;
+}
+
+.historyItem:last-child .timelineLine {
+  display: none;
+}
+
+.historyContent {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+}
+
+.historyTimestamp {
+  font-size: var(--font-size-14);
+  color: var(--color-dark-gray);
+  min-width: 150px;
+}
+
+.historyStatus {
+  padding: var(--spacing-4) var(--spacing-8);
+  border-radius: 4px;
+  font-size: var(--font-size-12);
+}
+
+.statusPassed {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.statusFailed {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.viewDetailsButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-medium-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+}

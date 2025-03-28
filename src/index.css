@@ -7,7 +7,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   /* Colors */
-  --color-white: #fff;
+  --color-white: #ffffff;
+  --color-black: #000000;
   --color-black-50: rgba(0, 0, 0, 0.5);
   --color-dark-gray: #333;
   --color-medium-gray: #666;
@@ -16,6 +17,14 @@ body {
   --color-primary-hover: rgba(238, 52, 37, 0.9);
   --color-error: #c62828;
   --color-error-bg: #ffebee;
+  --color-success: #4caf50;
+  --color-success-bg: rgba(76, 175, 80, 0.1);
+  --color-danger: #f44336;
+  --color-danger-bg: rgba(244, 67, 54, 0.1);
+  --color-warning: #ffc107;
+  --color-timeline: #ff5722;
+  --color-expanded-bg: #fff9f0;
+  --color-dashboard-bg: #f7f3e6;
 
   --font-size-4: 4px;
   --font-size-6: 6px;
@@ -50,6 +59,9 @@ body {
   --spacing-32: 32px;
   --spacing-34: 34px;
   --spacing-36: 36px;
+  --spacing-38: 38px;
+  --spacing-40: 40px;
+
 
   --font-weight-100: 100;
   --font-weight-200: 200;

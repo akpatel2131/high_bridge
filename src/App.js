@@ -5,7 +5,10 @@ import { useAuth } from './context/AuthContext';
 import Notification from './Components/Common/Notification';
 import Login from './Components/Login/Login';
 import SignUp from './Components/Login/SignUp';
+import Dashboard from './Components/Dashboard/Dashboard';
+import Workflow from './Components/Workflow/Workflow';
 import './App.css';
+
 
 const AppContent = () => {
   const { notification, hideNotification } = useAuth();
@@ -22,6 +25,8 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/home" element={<Dashboard />} />
+          <Route path="/workflow" element={<Workflow />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
