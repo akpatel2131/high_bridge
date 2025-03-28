@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
     const signup = useCallback(async (email, password) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('user', JSON.stringify(userCredential.user));
             showNotification('Account created successfully!', 'success');
             return userCredential.user;
         } catch (error) {
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     const login = useCallback(async (email, password) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('user', JSON.stringify(userCredential.user));
             showNotification('Logged in successfully!', 'success');
             return userCredential.user;
         } catch (error) {

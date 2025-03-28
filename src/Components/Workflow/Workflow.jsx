@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useEffectOnce } from "react-use";
 import styles from "./Workflow.module.css";
-import { FaTrash, FaSave, FaChevronLeft } from "react-icons/fa";
+import { FaTrash, FaSave } from "react-icons/fa";
 import NodeConfig from "./NodeConfig";
 import SaveWorkflowModal from "../SaveWorkflowModal/SaveWorkflowModal";
 import workFlowArrow from "../../Images/WorkFlow/work_flow_arrow.svg";
@@ -31,6 +32,12 @@ const Workflow = () => {
 
   const workflowId = searchParams.get("id");
   const status = searchParams.get("status");
+
+  useEffectOnce(() => {
+    if (!localStorage.getItem("user")) {
+      navigate("/login");
+    }
+  });
 
   useEffect(() => {
     const loadWorkflow = async () => {
@@ -81,35 +88,33 @@ const Workflow = () => {
     }
   };
 
-  const handleNodeClick = (node) => {
-    setSelectedNode(node);
-  };
-
-  const handleGoBack = () => {
-    navigate("/home");
-  };
-
-  const handleOpenSaveModal = () => {
-    setSaveModalOpen(true);
-  };
-
-  const handleSaveWorkflow = async (data) => {
-    try {
-      if (workflowId) {
-        await updateWorkflow(workflowId, {
-          title: data.name,
-          description: data.description,
-          nodes,
-        });
-      } else {
-        await createWorkflow(data.name, data.description, nodes);
+  const handleSaveWorkflow = useCallback(
+    async (data) => {
+      try {
+        if (workflowId) {
+          await updateWorkflow(workflowId, {
+            title: data.name,
+            description: data.description,
+            nodes,
+          });
+        } else {
+          await createWorkflow(data.name, data.description, nodes);
+        }
+        navigate(`/home`);
+        showNotification("Workflow saved successfully!", "success");
+      } catch (error) {
+        showNotification(error.message, "error");
       }
-      navigate(`/home`);
-      showNotification("Workflow saved successfully!", "success");
-    } catch (error) {
-      showNotification(error.message, "error");
-    }
-  };
+    },
+    [
+      createWorkflow,
+      updateWorkflow,
+      navigate,
+      showNotification,
+      workflowId,
+      nodes,
+    ]
+  );
 
   if (loading) {
     return <Loader size={20} />;
@@ -118,8 +123,8 @@ const Workflow = () => {
   return (
     <div className={styles.workflowContainer}>
       <div className={styles.header}>
-        <button className={styles.backButton} onClick={handleGoBack}>
-          {'<-'} Go Back
+        <button className={styles.backButton} onClick={() => navigate("/home")}>
+          {"<-"} Go Back
         </button>
         <span>{title}</span>
         {status ? (
@@ -132,7 +137,10 @@ const Workflow = () => {
             {status}
           </div>
         ) : (
-          <button className={styles.saveButton} onClick={handleOpenSaveModal}>
+          <button
+            className={styles.saveButton}
+            onClick={() => setSaveModalOpen(true)}
+          >
             <FaSave />
           </button>
         )}
@@ -157,7 +165,7 @@ const Workflow = () => {
                 className={clsx(styles.node, {
                   [styles.selected]: selectedNode?.id === node.id || status,
                 })}
-                onClick={() => handleNodeClick(node)}
+                onClick={() => setSelectedNode(node)}
               >
                 <div className={styles.nodeLabel}>{node.label}</div>
                 {status ? (

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import {useEffectOnce} from "react-use";
 import { format } from "date-fns";
 import styles from "./Dashboard.module.css";
 import {
@@ -30,6 +31,13 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 5;
 
+
+  useEffectOnce(() => {
+    if(!localStorage.getItem('user')) {
+      navigate('/login');
+    }
+  });
+
   useEffect(() => {
     fetchWorkflows();
   }, [fetchWorkflows]);
@@ -46,40 +54,23 @@ const Dashboard = () => {
     currentPage * itemsPerPage
   );
 
-  const toggleExpand = (index) => {
-    setExpandedWorkflow(expandedWorkflow === index ? null : index);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleExecute = (workflow) => {
-    setSelectedWorkflow(workflow);
-    setIsExecutionModalOpen(true);
-  };
-
   const handleConfirmExecution = () => {
     showNotification(`Executing workflow: ${selectedWorkflow.title}`, "info");
     setIsExecutionModalOpen(false);
-  };
-
-  const handleCreateNew = () => {
-    navigate("/workflow");
   };
 
   const handleEdit = (workflowId, status = "") => {
     navigate(`/workflow?id=${workflowId}&&status=${status}`);
   };
 
-  const handleDelete = async (workflowId) => {
+  const handleDelete = useCallback(async (workflowId) => {
     try {
       await deleteWorkflow(workflowId);
       showNotification("Workflow deleted successfully", "success");
     } catch (error) {
       showNotification(error.message, "error");
     }
-  };
+  }, [deleteWorkflow, showNotification]);
   
 
   return (
@@ -100,7 +91,7 @@ const Dashboard = () => {
           />
           <FaSearch className={styles.searchIcon} />
         </div>
-        <button className={styles.createButton} onClick={handleCreateNew}>
+        <button className={styles.createButton} onClick={() => navigate("/workflow")}>
           <FaPlus /> Create New Process
         </button>
       </div>
@@ -129,7 +120,10 @@ const Dashboard = () => {
                 <div className={styles.actions}>
                   <button
                     className={styles.executeButton}
-                    onClick={() => handleExecute(workflow)}
+                    onClick={() => {
+                      setSelectedWorkflow(workflow);
+                      setIsExecutionModalOpen(true);
+                    }}
                   >
                     Execute
                   </button>
@@ -151,7 +145,7 @@ const Dashboard = () => {
                   </Tooltip>
                   <button
                     className={styles.expandButton}
-                    onClick={() => toggleExpand(index)}
+                    onClick={() => setExpandedWorkflow(expandedWorkflow === index ? null : index)}
                   >
                     {expandedWorkflow === index ? (
                       <FaArrowUp />
@@ -204,7 +198,7 @@ const Dashboard = () => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={setCurrentPage}
         />
       )}
       </div>
