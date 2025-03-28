@@ -1,0 +1,8 @@
+.loaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--full-size);
+    min-height: 200px;
+    width: var(--full-size);
+  }

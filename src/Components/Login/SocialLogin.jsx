@@ -30,7 +30,7 @@ const SocialLogin = ({ type }) => {
                     throw new Error('Invalid provider');
             }
             if (user) {
-                navigate('/dashboard');
+                navigate('/home');
             }
         } catch (error) {
             setError(`Failed to ${buttonText.toLowerCase()} with ${provider}. ${error.message}`);

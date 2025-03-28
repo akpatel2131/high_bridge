@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import styles from "./Dashboard.module.css";
 import {
-  FaStar,
-  FaRegStar,
   FaSearch,
   FaPlus,
   FaEllipsisV,
@@ -17,6 +15,7 @@ import ExecutionModal from "../ExecutionModal/ExecutionModal";
 import { useWorkflow } from "../../context/WorkflowContext";
 import { useAuth } from "../../context/AuthContext";
 import Tooltip from "../Common/Tooltip/Tooltip";
+import Loader from "../Common/Loader/Loader";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ const Dashboard = () => {
   const [isExecutionModalOpen, setIsExecutionModalOpen] = useState(false);
   const [selectedWorkflow, setSelectedWorkflow] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchWorkflows();
@@ -114,7 +113,7 @@ const Dashboard = () => {
           <div className={styles.actions}></div>
         </div>
         {loading ? (
-          <div> loding...</div>
+          <Loader size={10} />
         ) : workflows.length > 0 ? (
           paginatedWorkflows.map((workflow, index) => (
             <React.Fragment key={workflow.id}>
@@ -142,6 +141,10 @@ const Dashboard = () => {
                   <Tooltip
                     options={["Delete"]}
                     onSelect={() => handleDelete(workflow.id)}
+                    innerClassName={{
+                      tooltipContent: styles.tooltipContent,
+                      option: styles.options,
+                    }}
                   >
                     <FaEllipsisV />
                   </Tooltip>

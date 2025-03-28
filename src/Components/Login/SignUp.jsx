@@ -27,7 +27,7 @@ const SignUp = () => {
         try {
             setLoading(true);
             await signup(email, password);
-            navigate('/dashboard');
+            navigate('/home');
         } catch (error) {
             // Error is handled by AuthContext
         } finally {

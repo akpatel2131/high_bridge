@@ -19,7 +19,7 @@ body {
   --color-error-bg: #ffebee;
   --color-success: #4caf50;
   --color-success-bg: rgba(76, 175, 80, 0.1);
-  --color-success-select: rgba(247, 250, 239, 1)
+  --color-success-select: rgba(247, 250, 239, 1);
   --color-danger: #f44336;
   --color-danger-bg: rgba(244, 67, 54, 0.1);
   --color-warning: #ffc107;

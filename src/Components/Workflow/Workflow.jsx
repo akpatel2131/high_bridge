@@ -7,15 +7,20 @@ import SaveWorkflowModal from "../SaveWorkflowModal/SaveWorkflowModal";
 import workFlowArrow from "../../Images/WorkFlow/work_flow_arrow.svg";
 import startFlow from "../../Images/WorkFlow/start_flow.svg";
 import endFlow from "../../Images/WorkFlow/end_flow.svg";
+import downArrow from "../../Images/WorkFlow/down_arrow.svg";
+import failIcon from "../../Images/WorkFlow/fail_icon.svg";
+import successIcon from "../../Images/WorkFlow/success_icon.svg";
 import Tooltip from "../Common/Tooltip/Tooltip";
 import clsx from "clsx";
 import { useWorkflow } from "../../context/WorkflowContext";
 import { useAuth } from "../../context/AuthContext";
+import Loader from "../Common/Loader/Loader";
 
 const Workflow = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { fetchWorkflowById, createWorkflow, updateWorkflow, loading } = useWorkflow();
+  const { fetchWorkflowById, createWorkflow, updateWorkflow, loading } =
+    useWorkflow();
   const { showNotification } = useAuth();
 
   const [nodes, setNodes] = useState([]);
@@ -107,19 +112,30 @@ const Workflow = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader size={20} />;
   }
 
   return (
     <div className={styles.workflowContainer}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={handleGoBack}>
-          <FaChevronLeft /> Go Back
+          {'<-'} Go Back
         </button>
         <span>{title}</span>
-        <button className={styles.saveButton} onClick={handleOpenSaveModal}>
-          <FaSave />
-        </button>
+        {status ? (
+          <div
+            className={clsx(styles.status, {
+              [styles.passed]: status === "passed",
+              [styles.failed]: status !== "passed",
+            })}
+          >
+            {status}
+          </div>
+        ) : (
+          <button className={styles.saveButton} onClick={handleOpenSaveModal}>
+            <FaSave />
+          </button>
+        )}
       </div>
 
       <div className={styles.workflowContent}>
@@ -127,37 +143,52 @@ const Workflow = () => {
           <img src={startFlow} alt="Start" />
           {nodes.map((node) => (
             <React.Fragment key={node.id}>
-              <Tooltip
-                options={["API Call", "Email", "Text Box"]}
-                onSelect={(option) => handleAddNode(nodes.length, option)}
-              >
-                <img src={workFlowArrow} alt="Arrow" />
-              </Tooltip>
+              {status ? (
+                <img src={downArrow} alt="Down Arrow" />
+              ) : (
+                <Tooltip
+                  options={["API Call", "Email", "Text Box"]}
+                  onSelect={(option) => handleAddNode(nodes.length, option)}
+                >
+                  <img src={workFlowArrow} alt="Arrow" />
+                </Tooltip>
+              )}
               <div
                 className={clsx(styles.node, {
-                  [styles.selected]: selectedNode?.id === node.id,
+                  [styles.selected]: selectedNode?.id === node.id || status,
                 })}
                 onClick={() => handleNodeClick(node)}
               >
                 <div className={styles.nodeLabel}>{node.label}</div>
-                <button
-                  className={styles.deleteButton}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteNode(node.id);
-                  }}
-                >
-                  <FaTrash />
-                </button>
+                {status ? (
+                  <img
+                    src={status === "passed" ? successIcon : failIcon}
+                    alt="Status"
+                  />
+                ) : (
+                  <button
+                    className={styles.deleteButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteNode(node.id);
+                    }}
+                  >
+                    <FaTrash />
+                  </button>
+                )}
               </div>
             </React.Fragment>
           ))}
-          <Tooltip
-            options={["API Call", "Email", "Text Box"]}
-            onSelect={(type) => handleAddNode(nodes.length, type)}
-          >
-            <img src={workFlowArrow} alt="Arrow" />
-          </Tooltip>
+          {status ? (
+            <img src={downArrow} alt="Down Arrow" />
+          ) : (
+            <Tooltip
+              options={["API Call", "Email", "Text Box"]}
+              onSelect={(type) => handleAddNode(nodes.length, type)}
+            >
+              <img src={workFlowArrow} alt="Arrow" />
+            </Tooltip>
+          )}
           <img src={endFlow} alt="End" />
         </div>
 
