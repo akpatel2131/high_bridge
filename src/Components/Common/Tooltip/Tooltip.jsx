@@ -1,25 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './tooltip.module.css';
 import clsx from 'clsx';
 import { isString } from 'lodash';
-
-interface TooltipProps {
-  options:
-    | {
-        title: string;
-        image: string;
-        className: string;
-      }[]
-    | string[];
-  onSelect?: (option: string) => void;
-  className?: string;
-  innerClassName?: {
-    trigger?: string;
-    tooltipContent?: string;
-    option?: string;
-  };
-  children: React.ReactNode;
-}
 
 export default function Tooltip({
   options,
@@ -27,13 +9,13 @@ export default function Tooltip({
   className,
   children,
   innerClassName,
-}: TooltipProps) {
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
@@ -42,10 +24,12 @@ export default function Tooltip({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleOptionClick = (option: string) => {
+  const handleOptionClick = (option) => {
     onSelect?.(option);
     setIsOpen(false);
   };
+
+  console.log({isOpen, options})
 
   return (
     <div className={clsx(styles.tooltipContainer, className)} ref={tooltipRef}>
